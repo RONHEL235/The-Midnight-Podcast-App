@@ -14,6 +14,7 @@ const PreviewItems = styled.div`
     font-family: Roboto;
     font-weight: 600;
     padding: 1rem;
+    margin-left: 50px;
 `
 
 const PreviewPageItems = styled.div`
@@ -22,8 +23,36 @@ const PreviewPageItems = styled.div`
     gap: 1rem;
 `
 
+const AZFilter = styled.div `
+    font-family: 'Roboto';
+    font-weight: bold;
+    margin-left: 75%;
+    margin-bottom: 20px;
+    font-size: 19px;
+`
+
+const DateFilter = styled.div`
+    font-family: 'Roboto';
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 19px;
+`
+
+const TheFilters = styled.div`
+    display: flex;
+    gap: 20px;
+`
+
+const Header = styled.h2`
+    font-family: 'Roboto';
+    margin-left: 75px;
+    padding-top: 25px;
+`
+
 export default function Preview() {
     const [shows, setShows] = React.useState([])
+    const [sortOrder, setSortOrder] = React.useState('A - Z')
+    const [sortOrderDate, setSortOrderDate] = React.useState('Recent')
     
     React.useEffect(() => {
         fetch("https://podcast-api.netlify.app")
@@ -31,9 +60,30 @@ export default function Preview() {
         .then(data => setShows(data))
     }, [])
 
+    const handleSort = (order) => {
+        setSortOrder(order)
+        let sortedShows = [...shows]
+        if (order === 'A - Z') {
+            sortedShows.sort((a, b) => a.title.localeCompare(b.title))
+        }else {
+            sortedShows.sort((a, b) => b.title.localeCompare(a.title))
+        }
+        setShows(sortedShows)
+    }
+
     return (
         <div>
-            <h2 style={{padding: 30 ,fontFamily: 'Roboto'}}>All shows you can watch</h2>
+            <Header>All shows you can watch</Header>
+            <TheFilters>
+                <AZFilter>
+                    <label htmlFor='sortOrder'>Sort by : </label>
+                    <select id='sortOrder' onChange={(event) => handleSort(event.target.value)} value={sortOrder}>
+                        <option style={{fontFamily: 'Roboto'}} value='A - Z'>A - Z</option>
+                        <option style={{fontFamily: 'Roboto'}} value='Z - A'>Z - A</option>
+                    </select>
+                </AZFilter>
+
+            </TheFilters>
             <PreviewItems>
                 {shows.map(show => (
                     <Link style={{textDecoration: 'none',  color: 'inherit'}} key={show.id} to={`/shows/${show.id}`}>

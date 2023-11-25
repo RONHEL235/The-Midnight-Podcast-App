@@ -1,6 +1,8 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react'
 import styled from 'styled-components'
+import Player from './Player'
+import { useParams} from 'react-router-dom'
+
 
 const ShowImage = styled.img `
   height: 300px;
@@ -25,10 +27,11 @@ const ShowHeader =styled.div`
 `
 
 const ShowEpisodes = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem;
+  cursor: pointer;
 `
 
 const ShowGrid = styled.div`
@@ -45,8 +48,11 @@ const Filtering = styled.select`
 
 export default function ShowDetails() {
   const [previewShow, setPreviewShow] = React.useState(null)
+  const [selectedEpisode, setSelectedEpisode] = React.useState(null)
   const [selectedSeason, setSelectedSeason] = React.useState(null)
   const { id } = useParams()
+
+  
 
   React.useEffect(() => {
     fetch(`https://podcast-api.netlify.app/id/${id}`)
@@ -62,6 +68,10 @@ export default function ShowDetails() {
     setSelectedSeason(event.target.value || null)
   }
 
+  const PlayEpisode = (episode) => {
+    setSelectedEpisode(episode)
+  }
+
   if (previewShow) {
     const firstSeasonImage = previewShow.seasons[0].image
     const allSeasons = previewShow.seasons
@@ -71,6 +81,7 @@ export default function ShowDetails() {
 
     return (
       <div>
+        {/* Show header information */}
         <ShowHeader>
           <ShowImage src={firstSeasonImage} />
           <div>
@@ -89,18 +100,25 @@ export default function ShowDetails() {
           ))}
         </Filtering>
 
-        <h2 style={{ margin: 30, fontFamily: 'Roboto'}}>{} Episodes</h2>
+        {/*Episodes of the season */}    
+        <h2 style={{ margin: 30, fontFamily: 'Roboto'}}>{selectedSeason? `${episodesArray.length} Episodes` :'All Episodes'}</h2>
         <ShowGrid> 
         {episodesArray.map(episode => (
-            <ShowEpisodes key={episode.title}>
+            <ShowEpisodes onClick={() => PlayEpisode(episode)} key={episode.title}>
               <ShowEpisodesImage src={firstSeasonImage} />
-              <div style={{fontSize: 20}}>
-                <h4>{episode.title}</h4>
-                <h5>Episode:{episode.episode}</h5>
+              <div style={{fontSize: 19}}>
+                <h4 style={{padding: 8}}>{episode.title}</h4>
+                <h5 style={{padding: 8}}>Episode:{episode.episode}</h5>
               </div>
             </ShowEpisodes>
         ))}
         </ShowGrid>
+        {selectedEpisode && (
+          <Player 
+            episodeTitle={selectedEpisode.title}
+            audioSource={selectedEpisode.file}
+          />
+        )}
       </div>
     )
   } else {
