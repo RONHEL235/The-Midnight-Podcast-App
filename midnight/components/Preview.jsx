@@ -26,16 +26,16 @@ const PreviewPageItems = styled.div`
 const AZFilter = styled.div `
     font-family: 'Roboto';
     font-weight: bold;
-    margin-left: 75%;
+    margin-left: 80%;
     margin-bottom: 20px;
-    font-size: 19px;
+    font-size: 17px;
 `
 
 const DateFilter = styled.div`
     font-family: 'Roboto';
     font-weight: bold;
     margin-bottom: 20px;
-    font-size: 19px;
+    font-size: 17px;
 `
 
 const TheFilters = styled.div`
@@ -71,6 +71,17 @@ export default function Preview() {
         setShows(sortedShows)
     }
 
+    const handleSortDate = (order) => {
+        setSortOrderDate(order)
+        let sortedShows = [...shows]
+        if (order === 'Recent') {
+          sortedShows.sort((a, b) => new Date(b.updated) - new Date(a.updated))
+        } else {
+          sortedShows.sort((a, b) => new Date(a.updated) - new Date(b.updated))
+        }
+        setShows(sortedShows)
+      }
+
     return (
         <div>
             <Header>All shows you can watch</Header>
@@ -82,7 +93,13 @@ export default function Preview() {
                         <option style={{fontFamily: 'Roboto'}} value='Z - A'>Z - A</option>
                     </select>
                 </AZFilter>
-
+                <DateFilter style={{ marginBottom: '20px' }}>
+                    <label htmlFor='sortOrderDate'>Sort by Date: </label>
+                    <select id='sortOrderDate' onChange={(e) => handleSortDate(e.target.value)} value={sortOrderDate}>
+                        <option value='Newest'>Recent</option>
+                        <option value='Oldest'>Oldest</option>
+                    </select>
+                </DateFilter>
             </TheFilters>
             <PreviewItems>
                 {shows.map(show => (

@@ -3,11 +3,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField'
 
 export default function Search() {
-   /*  const [input, setInput] = useState("")
-
-    const handleSearch = (event) => {
-        setInput(event.target.value)
-    } */
 
     return (
         <Box
