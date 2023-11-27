@@ -2,6 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import Player from './Player'
 import { useParams} from 'react-router-dom'
+import Box from '@mui/material/Box'
+import LinearProgress from '@mui/material/LinearProgress'
+
 
 
 const ShowImage = styled.img `
@@ -122,6 +125,10 @@ export default function ShowDetails() {
       </div>
     )
   } else {
-    return <p>Loading...</p>
+    return (
+    <Box sx={{ width: '100%'}}>
+      <LinearProgress />
+    </Box>
+    )
   }
 }

@@ -12,13 +12,13 @@ export default function App() {
 
   return (
   <div>
-    <Navbar />
     <Router>
+    <Navbar />
       <Routes>
         <Route exact path="/" element={<Preview />} />
         <Route path="/shows/:id" element={<ShowDetails />} />
-        <Route path="/discover/:id" element={<Discover />} />
-        <Route path="/favorites/:id" element={<Favorites />} />
+        <Route path="/discover" element={<Discover />} />
+        <Route path="/favorites" element={<Favorites />} />
       </Routes>
     </Router>
   </div>

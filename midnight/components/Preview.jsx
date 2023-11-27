@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import Box from '@mui/material/Box'
+import LinearProgress from '@mui/material/LinearProgress'
 
 const PreviewImages = styled.img `
     border-radius: 1rem;
@@ -10,7 +12,7 @@ const PreviewImages = styled.img `
 const PreviewItems = styled.div`
     display: grid;
     grid-template-columns: auto auto auto;
-    gap: 1rem;
+    gap: 1.8rem;
     font-family: Roboto;
     font-weight: 600;
     padding: 1rem;
@@ -20,13 +22,13 @@ const PreviewItems = styled.div`
 const PreviewPageItems = styled.div`
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.2rem;
 `
 
 const AZFilter = styled.div `
     font-family: 'Roboto';
     font-weight: bold;
-    margin-left: 80%;
+    margin-left: 60%;
     margin-bottom: 20px;
     font-size: 17px;
 `
@@ -49,16 +51,43 @@ const Header = styled.h2`
     padding-top: 25px;
 `
 
+const GenreFilter = styled.div`
+    font-family: 'Roboto';
+    font-weight: bold;
+    font-size: 17px;
+`
+
 export default function Preview() {
     const [shows, setShows] = React.useState([])
+    const [loading, setLoading] = React.useState(true)
     const [sortOrder, setSortOrder] = React.useState('A - Z')
     const [sortOrderDate, setSortOrderDate] = React.useState('Recent')
+    const [selectedGenre, setSelectedGenre] = React.useState('All') 
     
     React.useEffect(() => {
         fetch("https://podcast-api.netlify.app")
         .then(res => res.json())
-        .then(data => setShows(data))
+        .then(data => {
+            setShows(data);
+            setLoading(false); // Set loading to false after data is fetched
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+            setLoading(false); // In case of error, also set loading to false
+        });
     }, [])
+
+const genres = {
+    1: 'Personal Growth',
+    2:'True Crime and Investigative Journalism',
+    3:'History',
+    4:'Comedy',
+    5:'Entertainment',
+    6:'Business',
+    7:'Fiction',
+    8:'News',
+    9:'Kids and Family'
+}  
 
     const handleSort = (order) => {
         setSortOrder(order)
@@ -80,45 +109,76 @@ export default function Preview() {
           sortedShows.sort((a, b) => new Date(a.updated) - new Date(b.updated))
         }
         setShows(sortedShows)
-      }
+    }
+
+    const filteredShows = selectedGenre !== 'All'
+    ? shows.filter(show => show.genres.includes(parseInt(selectedGenre)))
+    : shows
+
+    const getGenreNames = (genreIds) => {
+        return genreIds.map(genreId => genres[genreId]).join(', ');
+    }
 
     return (
         <div>
             <Header>All shows you can watch</Header>
-            <TheFilters>
-                <AZFilter>
-                    <label htmlFor='sortOrder'>Sort by : </label>
-                    <select id='sortOrder' onChange={(event) => handleSort(event.target.value)} value={sortOrder}>
-                        <option style={{fontFamily: 'Roboto'}} value='A - Z'>A - Z</option>
-                        <option style={{fontFamily: 'Roboto'}} value='Z - A'>Z - A</option>
-                    </select>
-                </AZFilter>
-                <DateFilter style={{ marginBottom: '20px' }}>
-                    <label htmlFor='sortOrderDate'>Sort by Date: </label>
-                    <select id='sortOrderDate' onChange={(e) => handleSortDate(e.target.value)} value={sortOrderDate}>
-                        <option value='Newest'>Recent</option>
-                        <option value='Oldest'>Oldest</option>
-                    </select>
-                </DateFilter>
-            </TheFilters>
-            <PreviewItems>
-                {shows.map(show => (
-                    <Link style={{textDecoration: 'none',  color: 'inherit'}} key={show.id} to={`/shows/${show.id}`}>
-                        <PreviewPageItems >
-                            <PreviewImages 
-                            src={show.image} 
-                            alt= "podcast thumbnail"
-                            style={{height: '100px', background: ''}} />
-                            <div>
-                                <div style={{padding: 6}}>{show.title}</div>
-                                <div style={{padding: 6}}>Seasons: {show.seasons}</div>
-                                <div style={{padding: 6}}>Last updated: {new Date(show.updated).toDateString()}</div>
-                                {/* <div>Genre:{show.genres}</div> */}
-                            </div>
-                        </PreviewPageItems>
-                    </Link>
-                ))}
-            </PreviewItems>
+            {loading? (
+                <Box sx={{ width: '100%'}}>
+                    <LinearProgress />
+                </Box>
+            ) : (
+                <>    
+                    <TheFilters>
+                        <AZFilter>
+                            <label htmlFor='sortOrder'>Sort by order: </label>
+                            <select id='sortOrder' onChange={(event) => handleSort(event.target.value)} value={sortOrder}>
+                                <option style={{fontFamily: 'Roboto'}} value='A - Z'>A - Z</option>
+                                <option style={{fontFamily: 'Roboto'}} value='Z - A'>Z - A</option>
+                            </select>
+                        </AZFilter>
+                        <DateFilter style={{ marginBottom: '20px' }}>
+                            <label htmlFor='sortOrderDate'>Sort by Date: </label>
+                            <select id='sortOrderDate' onChange={(event) => handleSortDate(event.target.value)} value={sortOrderDate}>
+                                <option value='Newest'>Recent</option>
+                                <option value='Oldest'>Oldest</option>
+                            </select>
+                        </DateFilter>
+                        <GenreFilter>
+                            <label htmlFor='genreFilter'>Filter by Genre: </label>
+                            <select
+                                id='genreFilter'
+                                onChange={(event) => setSelectedGenre(event.target.value)}
+                                value={selectedGenre}
+                            >
+                                <option value='All'>All Genres</option>
+                                {Object.keys(genres).map(genreId => (
+                                    <option key={genreId} value={genreId}>
+                                        {genres[genreId]}
+                                    </option>
+                                ))}
+                            </select>
+                        </GenreFilter>
+                    </TheFilters>
+                    <PreviewItems>
+                        {filteredShows.map(show => (
+                            <Link style={{textDecoration: 'none',  color: 'inherit'}} key={show.id} to={`/shows/${show.id}`}>
+                                <PreviewPageItems >
+                                    <PreviewImages 
+                                    src={show.image} 
+                                    alt= "podcast thumbnail"
+                                    style={{height: '100px', background: ''}} />
+                                    <div>
+                                        <div style={{padding: 6}}>{show.title}</div>
+                                        <div style={{padding: 6}}>Seasons: {show.seasons}</div>
+                                        <div style={{padding: 6}}>Last updated: {new Date(show.updated).toDateString()}</div>
+                                        <div style={{padding: 6}}>{getGenreNames(show.genres)}</div>
+                                    </div>
+                                </PreviewPageItems>
+                            </Link>
+                        ))}
+                    </PreviewItems>
+                </>
+            )}
         </div>
     )
 }

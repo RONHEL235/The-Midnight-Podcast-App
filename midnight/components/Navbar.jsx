@@ -30,6 +30,7 @@ const BoxItems = styled.div`
 const CenterItems = styled.div`
     display: flex;
     margin-right: 60px;
+    textDecoration: 'none';  color: 'inherit'
 `
 
 export default function Navbar() {
@@ -41,8 +42,8 @@ export default function Navbar() {
                 <img style={{marginLeft: 25}} src="./images/logoipsum-245.svg" height="35"/>
             </TitleLogo>
             <CenterItems>
-                <h3 style={{marginLeft: 30 ,cursor: 'pointer'}}>Discover</h3>
-                <h3 style={{marginLeft: 30 ,cursor: 'pointer'}}>Favorites</h3>
+                <Link to="/discover" style={{fontSize: 18, fontWeight: 'bold', textDecoration: 'none',  color: 'inherit', marginLeft: 30 ,cursor: 'pointer'}}>Discover</Link>
+                <Link to="/favorites" style={{fontSize: 18, fontWeight: 'bold', textDecoration: 'none',  color: 'inherit', marginLeft: 30 ,cursor: 'pointer'}}>Favorites</Link>
             </CenterItems>
             <BoxItems>
                 <Search />
