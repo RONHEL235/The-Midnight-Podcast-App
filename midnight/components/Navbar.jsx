@@ -1,7 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import Box from '@mui/material/Box'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import Search from './Search'
+import TextField from '@mui/material/TextField'
 
 const NavStyle = styled.div`
     display: flex;
@@ -18,7 +20,7 @@ const NavStyle = styled.div`
 
 const TitleLogo = styled.div`
     display: flex;
-    margin-left: 50px;
+    margin-left: 40px;
 `
 
 const BoxItems = styled.div`
@@ -30,10 +32,12 @@ const BoxItems = styled.div`
 const CenterItems = styled.div`
     display: flex;
     margin-right: 60px;
-    textDecoration: 'none';  color: 'inherit'
 `
 
-export default function Navbar() {
+export default function Navbar({setSearchTerm}) {
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value)
+    }
 
     return (
         <NavStyle>
@@ -42,13 +46,30 @@ export default function Navbar() {
                 <img style={{marginLeft: 25}} src="./images/logoipsum-245.svg" height="35"/>
             </TitleLogo>
             <CenterItems>
-                <Link to="/discover" style={{fontSize: 18, fontWeight: 'bold', textDecoration: 'none',  color: 'inherit', marginLeft: 30 ,cursor: 'pointer'}}>Discover</Link>
-                <Link to="/favorites" style={{fontSize: 18, fontWeight: 'bold', textDecoration: 'none',  color: 'inherit', marginLeft: 30 ,cursor: 'pointer'}}>Favorites</Link>
             </CenterItems>
             <BoxItems>
-                <Search />
-                <h3 style={{fontSize: '16.5px', marginLeft: 10,cursor: 'pointer'}}>Log Out</h3>
+            <Box
+                component="form"
+                sx={{'& > :not(style)': { m: 1, width: '16ch' },
+                '& .MuiInputLabel-root': { fontWeight: 'bold' ,fontFamily: 'Roboto', fontSize: '16px', color: 'white' },
+                '& .MuiInputBase-input': { fontSize: '14px', color: 'white' },
+            }}
+                noValidate
+                >
+                <TextField 
+                id="filled-basic" 
+                variant="filled"
+                label="Search" 
+                onChange={handleSearch} 
+                />
+            </Box>
+            <Link to="/favorites" style={{fontSize: 16, fontWeight: 'bold', textDecoration: 'none',  color: 'inherit', marginLeft: 30 ,cursor: 'pointer'}}>Favorites</Link>
+                <h3 style={{fontSize: '16px', marginLeft: 80,cursor: 'pointer'}}>Log Out</h3>
             </BoxItems>
         </NavStyle>
     )
+}
+
+Navbar.propTypes = {
+    setSearchTerm: PropTypes.func.isRequired, 
 }

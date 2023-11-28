@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
+import Navbar from './Navbar'
 
 const PreviewImages = styled.img `
     border-radius: 1rem;
@@ -16,7 +17,7 @@ const PreviewItems = styled.div`
     font-family: Roboto;
     font-weight: 600;
     padding: 1rem;
-    margin-left: 50px;
+    margin-left: 30px;
 `
 
 const PreviewPageItems = styled.div`
@@ -28,7 +29,7 @@ const PreviewPageItems = styled.div`
 const AZFilter = styled.div `
     font-family: 'Roboto';
     font-weight: bold;
-    margin-left: 60%;
+    margin-left: 72%;
     margin-bottom: 20px;
     font-size: 17px;
 `
@@ -47,7 +48,7 @@ const TheFilters = styled.div`
 
 const Header = styled.h2`
     font-family: 'Roboto';
-    margin-left: 75px;
+    margin-left: 65px;
     padding-top: 25px;
 `
 
@@ -62,19 +63,20 @@ export default function Preview() {
     const [loading, setLoading] = React.useState(true)
     const [sortOrder, setSortOrder] = React.useState('A - Z')
     const [sortOrderDate, setSortOrderDate] = React.useState('Recent')
-    const [selectedGenre, setSelectedGenre] = React.useState('All') 
+    const [selectedGenre, setSelectedGenre] = React.useState('All')
+    const [searchTerm, setSearchTerm] = React.useState('') 
     
     React.useEffect(() => {
         fetch("https://podcast-api.netlify.app")
         .then(res => res.json())
         .then(data => {
-            setShows(data);
-            setLoading(false); // Set loading to false after data is fetched
+            setShows(data)
+            setLoading(false)
         })
         .catch(error => {
-            console.error("Error fetching data:", error);
-            setLoading(false); // In case of error, also set loading to false
-        });
+            console.error("Error fetching data:", error)
+            setLoading(false)
+        })
     }, [])
 
 const genres = {
@@ -111,14 +113,19 @@ const genres = {
         setShows(sortedShows)
     }
 
-    const filteredShows = selectedGenre !== 'All'
-    ? shows.filter(show => show.genres.includes(parseInt(selectedGenre)))
-    : shows
-
     const getGenreNames = (genreIds) => {
-        return genreIds.map(genreId => genres[genreId]).join(', ');
+        return genreIds.map(genreId => genres[genreId]).join(', ')
     }
 
+    const filteredShows = selectedGenre !== 'All'
+    ? shows.filter(show =>
+        show.genres.includes(parseInt(selectedGenre)) &&
+        show.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : shows.filter(show => {
+        const titleMatches = show.title.toLowerCase().includes(searchTerm.toLowerCase())
+        return titleMatches
+    })
     return (
         <div>
             <Header>All shows you can watch</Header>
@@ -127,24 +134,24 @@ const genres = {
                     <LinearProgress />
                 </Box>
             ) : (
-                <>    
+                <>  
+                    <Navbar setSearchTerm={setSearchTerm} />  
                     <TheFilters>
                         <AZFilter>
-                            <label htmlFor='sortOrder'>Sort by order: </label>
                             <select id='sortOrder' onChange={(event) => handleSort(event.target.value)} value={sortOrder}>
+                                <option value='Order'>Select Sort Order</option>
                                 <option style={{fontFamily: 'Roboto'}} value='A - Z'>A - Z</option>
                                 <option style={{fontFamily: 'Roboto'}} value='Z - A'>Z - A</option>
                             </select>
                         </AZFilter>
                         <DateFilter style={{ marginBottom: '20px' }}>
-                            <label htmlFor='sortOrderDate'>Sort by Date: </label>
                             <select id='sortOrderDate' onChange={(event) => handleSortDate(event.target.value)} value={sortOrderDate}>
+                                <option value='Date'>Date</option>
                                 <option value='Newest'>Recent</option>
                                 <option value='Oldest'>Oldest</option>
                             </select>
                         </DateFilter>
                         <GenreFilter>
-                            <label htmlFor='genreFilter'>Filter by Genre: </label>
                             <select
                                 id='genreFilter'
                                 onChange={(event) => setSelectedGenre(event.target.value)}

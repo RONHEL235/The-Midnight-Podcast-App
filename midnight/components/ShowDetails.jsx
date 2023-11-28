@@ -1,9 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import PropTypes from 'prop-types'
 import Player from './Player'
 import { useParams} from 'react-router-dom'
 import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
+import { BsSuitHeartFill } from "react-icons/bs"
+import { BsSuitHeart } from "react-icons/bs"
 
 
 
@@ -35,12 +38,13 @@ const ShowEpisodes = styled.div`
   gap: 1rem;
   margin: 1.5rem;
   cursor: pointer;
+  /* border: 0.2rem solid black; */
 `
 
 const ShowGrid = styled.div`
   display: grid;
   grid-template-columns: auto auto auto;
-  gap: 0.5rem;
+  gap: 0.9rem;
   font-family: Roboto;
 `
 
@@ -49,13 +53,18 @@ const Filtering = styled.select`
   font-family: Roboto;
 `
 
-export default function ShowDetails() {
+const EpisodeHeart = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export default function ShowDetails({ favoriteEpisodes, toggleFavorite }) {
   const [previewShow, setPreviewShow] = React.useState(null)
   const [selectedEpisode, setSelectedEpisode] = React.useState(null)
   const [selectedSeason, setSelectedSeason] = React.useState(null)
   const { id } = useParams()
 
-  
+
 
   React.useEffect(() => {
     fetch(`https://podcast-api.netlify.app/id/${id}`)
@@ -66,6 +75,7 @@ export default function ShowDetails() {
         setPreviewShow(null)
       })
   }, [id])
+
 
   const handleFilter = (event) => {
     setSelectedSeason(event.target.value || null)
@@ -107,13 +117,22 @@ export default function ShowDetails() {
         <h2 style={{ margin: 30, fontFamily: 'Roboto'}}>{selectedSeason? `${episodesArray.length} Episodes` :'All Episodes'}</h2>
         <ShowGrid> 
         {episodesArray.map(episode => (
-            <ShowEpisodes onClick={() => PlayEpisode(episode)} key={episode.title}>
+            <EpisodeHeart key={episode.title}>
+            <ShowEpisodes onClick={() => PlayEpisode(episode)}>
               <ShowEpisodesImage src={firstSeasonImage} />
               <div style={{fontSize: 19}}>
                 <h4 style={{padding: 8}}>{episode.title}</h4>
-                <h5 style={{padding: 8}}>Episode:{episode.episode}</h5>
+                <h5 style={{padding: 8}}>Episode : {episode.episode}</h5>
               </div>
-            </ShowEpisodes>
+              </ShowEpisodes>
+              <div onClick={() => toggleFavorite(episode)}>
+                  {favoriteEpisodes.some(
+                    (favEpisode) => favEpisode.title === episode.title
+                    )
+                    ? <BsSuitHeartFill />
+                    : <BsSuitHeart />}
+              </div>
+        </EpisodeHeart>              
         ))}
         </ShowGrid>
         {selectedEpisode && (
@@ -131,4 +150,14 @@ export default function ShowDetails() {
     </Box>
     )
   }
+}
+
+ShowDetails.propTypes = {
+  favoriteEpisodes: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      // Add other required properties if needed
+    })
+  ).isRequired,
+  toggleFavorite: PropTypes.func.isRequired,
 }
