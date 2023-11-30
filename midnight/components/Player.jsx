@@ -1,15 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { MdPause } from "react-icons/md";
-import { IoPlaySharp } from "react-icons/io5";
-import { IoIosSkipForward } from "react-icons/io";
-import { IoIosSkipBackward } from "react-icons/io";
+import { MdPause } from "react-icons/md"
+import { IoPlaySharp } from "react-icons/io5"
+import { IoIosSkipForward } from "react-icons/io"
+import { IoIosSkipBackward } from "react-icons/io"
 
 const AudioPlayer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
     position: fixed;
     bottom: 0;
     background: #262525;
@@ -43,14 +42,33 @@ const PrevNext = styled.div`
 const AudioController = styled.div`
     display: flex;
     align-items: center;
-    margin-left: 20px;
 `
 
-const Episode = styled.h3`
-    color: white;
+const Episode = styled.h4`
+    font-family: Roboto;
 `
 
-export default function Player({episodeTitle, audioSource}) {
+const TheImage = styled.img`
+    width: 60px;
+    height: 50px;
+`
+
+const TheLeft = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-right: 15%;
+    margin-left: 40px;
+`
+
+const TheRight = styled.div`
+    display: flex;
+    align-items: center;
+    position: fixed;
+    left: 37%;
+`
+
+export default function Player({episodeTitle, episodeImage, audioSource}) {
     const [isPlaying, setIsPlaying] = React.useState(false)
     const [currentTime, setCurrentTime] = React.useState(0)
     const [duration, setDuration] = React.useState(0)
@@ -103,8 +121,12 @@ export default function Player({episodeTitle, audioSource}) {
 
     return (
         <div>
-            <Episode>{episodeTitle}</Episode>
             <AudioPlayer>
+                <TheLeft>
+                    <TheImage src={episodeImage} />    
+                    <Episode>{episodeTitle}</Episode>
+                </TheLeft>
+                <TheRight>
                 <audio 
                 ref={audioPlayer} 
                 preload="metadata"
@@ -125,14 +147,15 @@ export default function Player({episodeTitle, audioSource}) {
                         max={duration}
                         value={currentTime}
                         onChange={(e) => {
-                        setCurrentTime(parseInt(e.target.value, 10))
-                        audioPlayer.current.currentTime = parseInt(e.target.value, 10)}}
-                        />
+                            setCurrentTime(parseInt(e.target.value, 10))
+                            audioPlayer.current.currentTime = parseInt(e.target.value, 10)}}
+                            />
                     </ProgressBar>
 
                     {/* duration */}
                     <TimeDuration>{formatTime(duration)}</TimeDuration>
                 </AudioController>
+            </TheRight>
             </AudioPlayer>
         </div>
     )
@@ -140,5 +163,6 @@ export default function Player({episodeTitle, audioSource}) {
 
 Player.propTypes = {
     episodeTitle: PropTypes.string.isRequired,
+    episodeImage: PropTypes.string.isRequired,
     audioSource: PropTypes.string.isRequired,
   }

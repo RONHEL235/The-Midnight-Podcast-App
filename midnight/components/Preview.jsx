@@ -1,35 +1,37 @@
 import React from 'react'
+import Navbar from './Navbar'
+import Box from '@mui/material/Box'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
-import Navbar from './Navbar'
 
 const PreviewImages = styled.img `
-    border-radius: 1rem;
+    border-radius: 0.2rem;
     margin: 0.5rem;
 `
 
 const PreviewItems = styled.div`
     display: grid;
     grid-template-columns: auto auto auto;
-    gap: 1.8rem;
+    gap: 1.9rem;
     font-family: Roboto;
     font-weight: 600;
     padding: 1rem;
     margin-left: 30px;
+    margin-right: 30px;
 `
 
 const PreviewPageItems = styled.div`
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 1.3rem;
+    /* border: 0.1rem solid black; */
 `
 
 const AZFilter = styled.div `
     font-family: 'Roboto';
     font-weight: bold;
-    margin-left: 72%;
+    margin-left: 71%;
     margin-bottom: 20px;
     font-size: 17px;
 `
@@ -46,9 +48,11 @@ const TheFilters = styled.div`
     gap: 20px;
 `
 
-const Header = styled.h2`
+const Header = styled.p`
     font-family: 'Roboto';
-    margin-left: 65px;
+    font-size: 21px;
+    font-weight: bold;
+    margin-left: 56px;
     padding-top: 25px;
 `
 

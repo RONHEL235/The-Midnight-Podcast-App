@@ -1,7 +1,8 @@
 import React from 'react'
+import Player from './Player'
 import PropTypes from 'prop-types'
-import { RxCross2 } from "react-icons/rx"
 import styled from 'styled-components'
+import { RxCross2 } from "react-icons/rx"
 
 const ShowEpisodes = styled.div`
   display: flex;
@@ -31,6 +32,11 @@ const TheCross = styled.div`
 export default function Favorites({ favoriteEpisodes, toggleFavorite }) {
     const [filterDate, setFilterDate] = React.useState('')
     const [sortOrder, setSortOrder] = React.useState('')
+    const [selectedEpisode, setSelectedEpisode] = React.useState(null)
+
+    const PlayEpisode = (episode) => {
+      setSelectedEpisode(episode)
+    }
 
     const formatTimestamp = (timestamp) => {
         const date = new Date(timestamp)
@@ -95,7 +101,7 @@ export default function Favorites({ favoriteEpisodes, toggleFavorite }) {
     
     return (
         <div>
-            <h1 style={{fontFamily: 'Roboto', marginLeft: 70, paddingTop: 25}}>Favorites</h1>
+            <h2 style={{fontFamily: 'Roboto', marginLeft: 70, paddingTop: 25}}>Favorites</h2>
             <TheFilters>
                 <select style={{margin: 10}} onChange={handleDateFilter}>
                     <option value="">Select Date</option>
@@ -110,7 +116,7 @@ export default function Favorites({ favoriteEpisodes, toggleFavorite }) {
             </TheFilters>
             {filteredEpisodes.map((episode) => (
                 <ShowEpisodes key={episode.title}>
-                    <FavEpisode style={{fontSize: 19}}>
+                    <FavEpisode style={{fontSize: 19}} onClick={() => PlayEpisode(episode)}>
                         <h4 style={{padding: 8}}>{episode.title}</h4>
                         <h5 style={{padding: 8}}>Episode : {episode.episode}</h5>
                         <h5 style={{padding: 8, fontFamily: 'Roboto'}} >Added on : {formatTimestamp(episode.timestamp)}</h5>
@@ -120,6 +126,14 @@ export default function Favorites({ favoriteEpisodes, toggleFavorite }) {
                     </TheCross>
                 </ShowEpisodes>
             ))}
+            <div>
+              {selectedEpisode && (
+                <Player 
+                  episodeTitle={selectedEpisode.title}
+                  audioSource={selectedEpisode.file}
+                />
+              )}
+            </div>
         </div>
     )
 }

@@ -34,6 +34,16 @@ const CenterItems = styled.div`
     margin-right: 60px;
 `
 
+const LogoFlex = styled.div`
+    display: flex;
+`
+
+const TheTitle = styled.p`
+    font-family: 'Roboto';
+    font-size: 25.5px;
+    font-weight: bold;
+`   
+
 export default function Navbar({setSearchTerm}) {
     const handleSearch = (event) => {
         setSearchTerm(event.target.value)
@@ -42,8 +52,12 @@ export default function Navbar({setSearchTerm}) {
     return (
         <NavStyle>
             <TitleLogo>
-                <h1 style={{cursor: 'pointer'}}>The Midnight Podcast</h1>
-                <img style={{marginLeft: 25}} src="./images/logoipsum-245.svg" height="35"/>
+                <Link to='/preview' style={{cursor: 'pointer', textDecoration: 'none',  color: 'inherit'}}>
+                    <LogoFlex>
+                        <TheTitle>The Midnight Podcast</TheTitle>
+                        <img style={{marginLeft: 25}} src="./images/logoipsum-245.svg" height="30"/>
+                    </LogoFlex>
+                </Link>
             </TitleLogo>
             <CenterItems>
             </CenterItems>
@@ -60,11 +74,13 @@ export default function Navbar({setSearchTerm}) {
                 id="filled-basic" 
                 variant="filled"
                 label="Search" 
-                onChange={handleSearch} 
+                onChange={handleSearch}
+                autoComplete="off"
+                name={`search-${Math.random().toString(36).substring(7)}`}
                 />
             </Box>
             <Link to="/favorites" style={{fontSize: 16, fontWeight: 'bold', textDecoration: 'none',  color: 'inherit', marginLeft: 30 ,cursor: 'pointer'}}>Favorites</Link>
-                <h3 style={{fontSize: '16px', marginLeft: 80,cursor: 'pointer'}}>Log Out</h3>
+                <Link  to='/' style={{fontSize: 16, fontWeight: 'bold', textDecoration: 'none',  color: 'inherit', marginLeft: 80 ,cursor: 'pointer'}}>Log Out</Link >
             </BoxItems>
         </NavStyle>
     )
