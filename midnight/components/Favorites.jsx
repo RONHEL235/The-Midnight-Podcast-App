@@ -97,11 +97,10 @@ export default function Favorites({ favoriteEpisodes, toggleFavorite }) {
       } else if (sortOrder === 'desc') {
         filteredEpisodes.sort((a, b) => b.title.localeCompare(a.title))
       }
-
     
     return (
         <div>
-            <h2 style={{fontFamily: 'Roboto', marginLeft: 70, paddingTop: 25}}>Favorites</h2>
+            <h2 style={{fontSize: '21px',fontFamily: 'Roboto', marginLeft: 70, paddingTop: 25}}>Favorites</h2>
             <TheFilters>
                 <select style={{margin: 10}} onChange={handleDateFilter}>
                     <option value="">Select Date</option>
@@ -115,9 +114,10 @@ export default function Favorites({ favoriteEpisodes, toggleFavorite }) {
                 </select>
             </TheFilters>
             {filteredEpisodes.map((episode) => (
-                <ShowEpisodes key={episode.title}>
+              <ShowEpisodes key={episode.title}>
                     <FavEpisode style={{fontSize: 19}} onClick={() => PlayEpisode(episode)}>
                         <h4 style={{padding: 8}}>{episode.title}</h4>
+                        <h5 style={{padding: 8}}>Season : 1</h5>
                         <h5 style={{padding: 8}}>Episode : {episode.episode}</h5>
                         <h5 style={{padding: 8, fontFamily: 'Roboto'}} >Added on : {formatTimestamp(episode.timestamp)}</h5>
                     </FavEpisode>

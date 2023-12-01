@@ -10,15 +10,28 @@ import ShowDetails from './components/ShowDetails'
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 
 const MainContainer = styled.div`
-  margin-top: ${(props) => (props.showNavbar ? '0' : '60px')}
-  transition: margin-top 0.1s ease
+  margin-top: ${(props) => (props.showNavbar ? '60px' : '0')};
+  transition: margin-top 0.3s ease;
 `
 
 export default function App() {
   const [searchTerm, setSearchTerm] = React.useState('')
   const [shows, setShows] = React.useState([])
   const [favoriteEpisodes, setFavoriteEpisodes] = React.useState([])
+  const [token, setToken] = React.useState(false)
   const [showNavbar, setShowNavbar] = React.useState(true)
+
+  if(token){
+    sessionStorage.setItem('token',JSON.stringify(token))
+  }
+
+  React.useEffect(() => {
+    if(sessionStorage.getItem('token')){
+      let data = JSON.parse(sessionStorage.getItem('token'))
+      setToken(data)
+    }
+    
+  }, [])
 
   React.useEffect(() => {
     fetch("https://podcast-api.netlify.app")
@@ -62,14 +75,13 @@ export default function App() {
   }
 
   return (
-  <div >
     <Router>
     <MainContainer showNavbar={showNavbar}>
     {showNavbar && <Navbar setSearchTerm={setSearchTerm} shows={shows} />}
       <Routes>
-        <Route exact path="/" element={<Loginout setShowNavbar={setShowNavbar} />} />
-        <Route exact path="/signup" element={<SignUp  setShowNavbar={setShowNavbar}/>} />
-        <Route exact path="/preview" element={<Preview shows={filteredShows} />} />
+        <Route exact path="/" element={<Loginout setToken={setToken} setShowNavbar={setShowNavbar} />} />
+        <Route path="/signup" element={<SignUp />} setShowNavbar={setShowNavbar} />
+        <Route path="/preview" element={<Preview shows={filteredShows} token={token} />} />
         <Route path="/shows/:id" element={<ShowDetails
         favoriteEpisodes={favoriteEpisodes} 
         toggleFavorite={toggleFavorite} />} />
@@ -79,6 +91,5 @@ export default function App() {
       </Routes>
       </MainContainer>
     </Router>
-  </div>
   )
 }

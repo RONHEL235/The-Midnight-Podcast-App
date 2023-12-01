@@ -4,15 +4,6 @@ import { supabase } from './client'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-const BackgroundContainer = styled.div`
-  background-image: url('./images/LoginBackground.jpg');
-  background-size: cover;
-  background-position: center;
-  height: 80vh;
-   width: 100%;
-  color: white;
-`;
-
 const TheWholeForm = styled.div`
     display: flex;
     flex-direction: column;
@@ -27,7 +18,7 @@ const TheForm = styled.div`
     gap: 20px;
 `
 
-export default function SignUp({ setShowNavbar }) {
+export default function SignUp({ setShowNavbar}) {
     const [formData, setFormData] = React.useState({
         fullName: '', email: '', password:''
     })
@@ -36,6 +27,8 @@ export default function SignUp({ setShowNavbar }) {
         setShowNavbar(false);
         return () => setShowNavbar(true);
       }, [setShowNavbar])
+
+    console.log(formData)
 
     function handleChange(event) {
         setFormData((prevFormData) => {
@@ -61,14 +54,15 @@ export default function SignUp({ setShowNavbar }) {
                     }
                 }
             )
+            if (error) throw error
             alert('Check your email for verification link')
+
         } catch (error) {
             alert(error)
         }
     }
 
     return (
-        <BackgroundContainer>
         <TheWholeForm>
             <h1 style={{fontFamily: 'Roboto'}}>
                 The Midnight Podcast
@@ -98,11 +92,11 @@ export default function SignUp({ setShowNavbar }) {
                 </button>
             </TheForm>
             <p style={{ fontWeight: 'bold', fontFamily: 'Roboto'}}>Already have an account?</p><Link to='/' style={{fontWeight: 'bold', fontFamily: 'Roboto', textDecoration: 'none',  color: 'blue'}}>Login</Link> 
+        <img style={{width: 300, height: 200, marginLeft: '-45%', marginTop: '8%'}} src={'./images/download.jpg'} />
         </TheWholeForm>
-        </BackgroundContainer>
     )
 }
 
 SignUp.propTypes = {
     setShowNavbar: PropTypes.func.isRequired,
-}
+  }

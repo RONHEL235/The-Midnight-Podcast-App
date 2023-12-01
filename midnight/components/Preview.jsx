@@ -1,4 +1,5 @@
 import React from 'react'
+import Fuse from 'fuse.js'
 import Navbar from './Navbar'
 import Box from '@mui/material/Box'
 import styled from 'styled-components'
@@ -82,6 +83,20 @@ export default function Preview() {
             setLoading(false)
         })
     }, [])
+
+    const fuse = new Fuse(shows, {
+        keys: ['title', 'description'], // Adjust keys based on your data
+        includeScore: true,
+        threshold: 0.3,
+      })
+
+    const performSearch = (term) => {
+        setSearchTerm(term);
+        const results = fuse.search(term);
+        const matchedShows = results.map(result => result.item);
+        return matchedShows;
+    } 
+
 
 const genres = {
     1: 'Personal Growth',

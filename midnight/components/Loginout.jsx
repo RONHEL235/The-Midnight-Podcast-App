@@ -18,43 +18,51 @@ const TheForm = styled.div`
     gap: 20px;
 ` 
 
-export default function Loginout({ setShowNavbar }) {
-     let navigate = useNavigate()
+export default function Loginout({setToken, setShowNavbar }) {
+    let navigate = useNavigate()
 
-    const [formData, setFormData] = React.useState({
-        email: '', password:''
+    const [formData,setFormData] = React.useState({
+          email:'',password:''
     })
 
     React.useEffect(() => {
         setShowNavbar(false);
         return () => setShowNavbar(true);
       }, [setShowNavbar])
-
-    function handleChange(event) {
-        setFormData((prevFormData) => {
-            return {
-                ...prevFormData,
-                [event.target.name]: event.target.value
-            }
-        })
-    }
-
-    async function handleSubmit(event) {
-        event.preventDefault()
-
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                    email: formData.email,
-                    password: formData.password,
-                })
-                navigate('/preview')
-        } catch (error) {
-            alert(error)
+  
+    console.log(formData)
+  
+    function handleChange(event){
+      setFormData((prevFormData)=>{
+        return{
+          ...prevFormData,
+          [event.target.name]:event.target.value
         }
+  
+      })
+  
+    }
+  
+    async function handleSubmit(event){
+        event.preventDefault()
+  
+      try {
+          const { data, error } = await supabase.auth.signInWithPassword({
+              email: formData.email,
+              password: formData.password,
+            })
+  
+        if (error) throw error
+        console.log(data)
+        setToken(data)
+        navigate('/preview')
+  
+      } catch (error) {
+        alert(error)
+      }
     }
 
     return (
-        <div>
         <TheWholeForm>
             <h1 style={{fontFamily: 'Roboto'}}>
                 The Midnight Podcast
@@ -78,11 +86,12 @@ export default function Loginout({ setShowNavbar }) {
                 </button>
             </TheForm>
             <p style={{fontWeight: 'bold', fontFamily: 'Roboto'}}>Do not have an account?</p><Link to='/signup' style={{fontWeight: 'bold', fontFamily: 'Roboto', textDecoration: 'none',  color: 'blue'}}>SignUp</Link> 
+            <img style={{width: 300, height: 200, marginLeft: '-45%', marginTop: '8%'}} src={'./images/download.jpg'} />
         </TheWholeForm>
-        </div>
     )
 }
 
 Loginout.propTypes = {
     setShowNavbar: PropTypes.func.isRequired,
+    setToken: PropTypes.func.isRequired,
 }
