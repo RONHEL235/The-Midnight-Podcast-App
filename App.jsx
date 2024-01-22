@@ -44,6 +44,14 @@ export default function App() {
       })
   }, [])
 
+  React.useEffect(() => {
+    if (sessionStorage.getItem('favoriteEpisodes')) {
+      const storedFavorites = JSON.parse(sessionStorage.getItem('favoriteEpisodes'))
+      setFavoriteEpisodes(storedFavorites)
+    }
+  }, [])
+  
+
   const updateShows = (searchTerm) => {
     if (searchTerm === '') {
       return shows
@@ -62,17 +70,21 @@ export default function App() {
     const isFavorite = favoriteEpisodes.find(
       (favEpisode) => favEpisode.title === episode.title
     )
-
+  
     if (isFavorite) {
       const updatedFavorites = favoriteEpisodes.filter(
         (favEpisode) => favEpisode.title !== episode.title
       )
       setFavoriteEpisodes(updatedFavorites)
+      sessionStorage.setItem('favoriteEpisodes', JSON.stringify(updatedFavorites))
     } else {
       const timestamp = new Date().toISOString()
-      setFavoriteEpisodes([...favoriteEpisodes, { ...episode, timestamp }])
+      const updatedFavorites = [...favoriteEpisodes, { ...episode, timestamp }]
+      setFavoriteEpisodes(updatedFavorites)
+      sessionStorage.setItem('favoriteEpisodes', JSON.stringify(updatedFavorites))
     }
   }
+  
 
   return (
     <Router>
