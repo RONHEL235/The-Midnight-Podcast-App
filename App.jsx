@@ -91,9 +91,8 @@ export default function App() {
     <MainContainer showNavbar={showNavbar}>
     {showNavbar && <Navbar setSearchTerm={setSearchTerm} shows={shows} />}
       <Routes>
-        <Route exact path="/" element={<Loginout setToken={setToken} setShowNavbar={setShowNavbar} />} />
+        <Route exact path="/" element={<Preview shows={filteredShows} token={token} />} />
         <Route path="/signup" element={<SignUp />} setShowNavbar={setShowNavbar} />
-        <Route path="/preview" element={<Preview shows={filteredShows} token={token} />} />
         <Route path="/shows/:id" element={<ShowDetails
         favoriteEpisodes={favoriteEpisodes} 
         toggleFavorite={toggleFavorite} />} />
