@@ -52,7 +52,7 @@ export default function Navbar({setSearchTerm}) {
     return (
         <NavStyle>
             <TitleLogo>
-                <Link to='/preview' style={{cursor: 'pointer', textDecoration: 'none',  color: 'inherit'}}>
+                <Link to='/' style={{cursor: 'pointer', textDecoration: 'none',  color: 'inherit'}}>
                     <LogoFlex>
                         <TheTitle>The Midnight Podcast</TheTitle>
                         <img style={{marginLeft: 25}} src="./images/logoipsum-245.svg" height="30"/>
